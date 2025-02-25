@@ -12,14 +12,8 @@
 % TODO list:
 % 1) add more options in constructor
 % 2) add read functions overrides
+% 3) delete connect_init()
 
-
-%      Bytes_count = serial_obj.NumBytesAvailable;
-%
-%         if Bytes_count == Obj.number_of_bytes
-%             Data = read(serial_obj, Bytes_count, "uint8");
-%             stop = 1;
-%         end
 
 classdef Connector_COM_RS232 < Connector
     methods (Access = public)
@@ -33,37 +27,44 @@ classdef Connector_COM_RS232 < Connector
                     = 1;
                 options.Parity {mustBeMember(options.Parity,...
                     ["none", "even", "odd"])} = "none";
-                %FIXME: update options
             end
-            options.speed = speed;
             % FIXME: add arg check
-            obj.connect_init(port_name, options);
+            obj.visa_obj = serialport(port_name, speed, ...
+                'DataBits', options.DataBits, ...
+                'StopBits', options.StopBits, ...
+                'Parity', options.Parity);
         end
     end
 
     methods (Access = public)
         function send_text(obj, text)
-            obj.connection_assert();
-            text = string_to_char(text);
-            write(obj.visa_obj, uint8(text), "uint8");
+%             text = utils.string_to_char([text '\n']);
+%             text = [text '']
+%             uint8(text)
+            write(obj.visa_obj, [uint8(text) uint8(10)], "uint8");
         end
 
         function send_bytes(obj, bytes)
-            obj.connection_assert();
             write(obj.visa_obj, uint8(bytes), "uint8");
         end
-    end
 
-    methods (Access = protected)
-        function connect_init(obj, port_name, options)
-            options % DEBUG MODE
-%             obj.visa_obj = serialport(port_name, speed, ...
-%                 'DataBits', 8, ...
-%                 'StopBits', 1, ...
-%                 'Parity', 'odd');
+        function Data = read_data(obj)
+            serial_obj = obj.visa_obj;
+            Bytes_count = serial_obj.NumBytesAvailable;
+            if Bytes_count > 0
+                Data = read(serial_obj, Bytes_count, "uint8");
+            else
+                Data = [];
+            end
+        end
+
+        function resp = query(obj, CMD)
+            obj.send_text(CMD);
+            pause(0.1)
+            Data = obj.read_data;
+            resp = char(Data)';
         end
     end
-
 end
 
 
