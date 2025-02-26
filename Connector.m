@@ -37,14 +37,13 @@
 % ------------
 
 % TODO:
-% 1) replace sent_bytes and _text to one function
+% 1) replace send_bytes and send_text to one function 
+%    (send text by "send_bytes")
 % 2) replace query
-% 3) 
-% 4) send text by "send_bytes"
-% 5) add query function
-% 6) may be discard termination in base class?
-% 7) create error MSG with stacktrace
-% 8) 
+% 3) may be discard termination in base class?
+% 4) create error MSG with stacktrace
+% 5) 
+
 
 classdef Connector < handle
 

@@ -10,9 +10,8 @@
 %-------------
 
 % TODO list:
-% 1) add more options in constructor
-% 2) add read functions overrides
-% 3) delete connect_init()
+% 1) 
+% 2) 
 
 
 classdef Connector_COM_RS232 < Connector
