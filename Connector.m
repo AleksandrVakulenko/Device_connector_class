@@ -14,32 +14,37 @@
 % Destruction of low-level resources instance is produced by Connector class
 % delete function, by calling visa_obj.delete.
 %
-% 1) connect_init function:
-% - must be called in subclass constructor;
-% - sets property visa_obj to low-level connection class instance
+% 1) 
 %
-% 2) send_text function (Abstract):
-% - sends ASCII text to the device;
-% - overrided by subclass;
-%
-% 3) send_bytes function (Abstract):
-% - sends ASCII text to the device;
+% 2) read_data function (Abstract, protected):
+% - reads responce from the divece;
 % - must be overrided by subclass;
 %
-% 4) query function (Abstrtact):
+% 3) send_data function (Abstract, protected):
+% - sends ASCII text of bytes array to the device;
+% - must be overrided by subclass;
+% 
+% 4) send function (public):
+% - high-level wrapper of an abstract send_data
+%
+% 5) read function (public):
+% - high-level wrapper of an abstract read_data
+% 
+% 
+% 6) query function (public):
+%    NOTE: NOT ABSTRACT 2025.02.26
 % - sends ASCII text to the device and return a response;
 % - must be overrided by subclass;
 %
-% 5) visa_obj property:
+% 7) visa_obj property:
 % - saves a handle to build-in Matlab class instance (serialport for example);
 % - inappropriate use of visa_obj property lead to undefined behavior;
 %
 % ------------
 
 % TODO:
-% 1) replace send_bytes and send_text to one function 
-%    (send text by "send_bytes")
-% 2) replace query
+% 1) Add public read_function
+% 2) 
 % 3) may be discard termination in base class?
 % 4) create error MSG with stacktrace
 % 5) 
@@ -76,15 +81,34 @@ classdef Connector < handle
 
     % general send/receive
     methods (Access = public)
+        function send(obj, data)
+            if class(data) == "string" || class(data) == "char"
+                data = uint8(char(data));
+                obj.send_data(data);
+            end
+            if class(data) == "uint8" || class(data) == "int8"
+                data = uint8(data);
+                obj.send_data(data);
+            end
+        end
+
+        function data = read(obj)
+            data = obj.read_data;
+        end
+
+        function response = query(obj, data)
+            obj.send(data);
+            pause(0.05); % FIXME: magic constant
+            response = obj.read_data;
+            % FIXME: timeout?
+        end
 
     end
     
     % abstract send/receive (FIXME: make protected)
-    methods (Abstract, Access = public)
-        send_bytes(obj, bytes);
-        send_text(obj, text);
-        data = read_data(obj)
-        query(obj, text);
+    methods (Abstract, Access = protected)
+        send_data(obj, bytes);
+        data = read_data(obj);
     end
 
     properties (Access = protected)

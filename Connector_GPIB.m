@@ -16,7 +16,7 @@ classdef Connector_GPIB < Connector
         function obj = Connector_GPIB(port_name, options)
             arguments
                 port_name;
-                options.timeout double = 0.5;
+                options.timeout double = 0.5; %FIXME: magic constant
             end
             disp("Connector_GPIB C-tor") % FIXME: debug
             port_name_full = utils.GPIB_port_name_convert(port_name);
@@ -30,16 +30,16 @@ classdef Connector_GPIB < Connector
         end
     end
 
-    methods
+    methods (Access = protected)
         function f_close(obj) % FIXME: debug/delete
             fclose(obj.visa_obj);
         end
 
-        function send_bytes(obj, bytes)
+        function send_data(obj, bytes)
             fopen(obj.visa_obj);
             try
             fwrite(obj.visa_obj, bytes);
-            catch
+            catch e
                 fclose(obj.visa_obj);
                 error(e.message)
             end
@@ -56,22 +56,6 @@ classdef Connector_GPIB < Connector
             end
             fclose(obj.visa_obj);
             data = utils.discard_termination(data);
-        end
-
-        function send_text(obj, text)
-            % FIXME: check for '\n' in text
-            % fprintf(obj.visa_obj, [text '\r\n']);
-            % FIXME: wrong place for termination
-            term1 = uint8(13);
-            term2 = uint8(10);
-            bytes = [uint8(text)];
-            obj.send_bytes(bytes)
-        end
-
-        function response = query(obj, text)
-            % FIXME: timeout?
-            obj.send_text(text);
-            response = obj.read_data;
         end
     end
 

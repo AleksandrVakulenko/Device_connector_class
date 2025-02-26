@@ -36,14 +36,7 @@ classdef Connector_COM_RS232 < Connector
     end
 
     methods (Access = public)
-        function send_text(obj, text)
-%             text = utils.string_to_char([text '\n']);
-%             text = [text '']
-%             uint8(text)
-            write(obj.visa_obj, [uint8(text) uint8(10)], "uint8");
-        end
-
-        function send_bytes(obj, bytes)
+        function send_data(obj, bytes)
             write(obj.visa_obj, uint8(bytes), "uint8");
         end
 
@@ -57,12 +50,6 @@ classdef Connector_COM_RS232 < Connector
             end
         end
 
-        function resp = query(obj, CMD)
-            obj.send_text(CMD);
-            pause(0.1)
-            Data = obj.read_data;
-            resp = char(Data)';
-        end
     end
 end
 
