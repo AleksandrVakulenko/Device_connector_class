@@ -63,7 +63,12 @@ classdef Connector < handle
                         'in Connector.delete'])
                 end
             else
-                disp('Delete visa_obj (not handle)')
+                try % try to delete/ useful for gpib
+                    delete(obj.visa_obj)
+                    disp('Delete visa_obj (not handle)')
+                catch
+                    disp('visa_obj (not handle) could not be deleted')
+                end
             end
         end
     end

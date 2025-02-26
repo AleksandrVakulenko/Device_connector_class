@@ -7,7 +7,7 @@
 % ------------
 
 % TODO list:
-% 1) ni OR keysight VISA?
+% 1) adlink, mcc, ni, keysight VISA?
 % 2) port_name variants string? char? num?
 % 3) 
 
@@ -38,7 +38,7 @@ classdef Connector_GPIB < Connector
         function send_data(obj, bytes)
             fopen(obj.visa_obj);
             try
-            fwrite(obj.visa_obj, bytes);
+                fwrite(obj.visa_obj, bytes);
             catch e
                 fclose(obj.visa_obj);
                 error(e.message)

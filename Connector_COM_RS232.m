@@ -35,7 +35,7 @@ classdef Connector_COM_RS232 < Connector
         end
     end
 
-    methods (Access = public)
+    methods (Access = protected)
         function send_data(obj, bytes)
             write(obj.visa_obj, uint8(bytes), "uint8");
         end
