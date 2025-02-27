@@ -1,15 +1,18 @@
-% Date: 2025.02.19
-% Version: 0.1
+% Date: 2025.02.28
+% Version: 1.0
 % Author: Aleksandr Vakulenko
+% Licensed after GNU GPL v3
 %
 % ----INFO----:
-
+% Connector_GPIB is a subclass of Connector, specified for maintain
+% connection by GPIB line using Low-level instace of Matlab built-in
+% visa object.
 % ------------
 
 % TODO list:
 % 1) adlink, mcc, ni, keysight VISA?
 % 2) port_name variants string? char? num?
-% 3) 
+% 3) timeout
 
 classdef Connector_GPIB < Connector
     methods
@@ -18,15 +21,14 @@ classdef Connector_GPIB < Connector
                 port_name;
                 options.timeout double = 0.5; %FIXME: magic constant
             end
-            disp("Connector_GPIB C-tor") % FIXME: debug
-            port_name_full = utils.GPIB_port_name_convert(port_name);
+            DEBUG_MSG("Connector_GPIB", "red", "ctor")
+            port_name_full = con_utils.GPIB_port_name_convert(port_name);
             obj.visa_obj = visa('ni', port_name_full);
             obj.visa_obj.Timeout = options.timeout;
         end
 
         function delete(obj)
-            % FIXME: debug
-            disp("Connector_GPIB D-tor")
+            DEBUG_MSG("Connector_GPIB", "red", "dtor")
         end
     end
 
@@ -55,7 +57,7 @@ classdef Connector_GPIB < Connector
                 error(e.message)
             end
             fclose(obj.visa_obj);
-            data = utils.discard_termination(data);
+            data = con_utils.discard_termination(data);
         end
     end
 

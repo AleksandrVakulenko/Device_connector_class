@@ -1,18 +1,14 @@
-% Date: 2025.02.18
-% Version: 0.9
+% Date: 2025.02.28
+% Version: 1.0
 % Author: Aleksandr Vakulenko
+% Licensed after GNU GPL v3
 %
 % ----INFO----:
 % Connector_COM_RS232 is a subclass of Connector, specified for maintain
-% connection by RS232 line by Low-level instace of Matlab built-in
+% connection by RS232 line using Low-level instace of Matlab built-in
 % serialport object.
 %
 %-------------
-
-% TODO list:
-% 1) 
-% 2) 
-
 
 classdef Connector_COM_RS232 < Connector
     methods (Access = public)

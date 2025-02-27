@@ -1,53 +1,47 @@
-% Date: 2025.02.18
-% Version: 0.9
+% Date: 2025.02.28
+% Version: 1.0
 % Author: Aleksandr Vakulenko
+% Licensed after GNU GPL v3
 %
 % ----INFO----:
 % Connector(handle) is an abstract class  for wraping RS232,
-% USB(virtual COM port) and GPIB connections to an arbitraty I/O device.
+% USB(virtual COM port) and GPIB connection to an arbitraty I/O device.
 %
-% Real connection is maintaned by inherited subclasses, scesialized for
+% Real connection is maintaned by inherited subclasse, scesialized for
 % some kind of interface type.
 %
-% Abstract functions must be overrided by the subclass.
+% Abstract functions must be overrided by the subclass:
 %
-% Destruction of low-level resources instance is produced by Connector class
+% Destruction of low-level serial instance is produced by Connector class
 % delete function, by calling visa_obj.delete.
 %
-% 1) 
-%
-% 2) read_data function (Abstract, protected):
+% 1) read_data function (Abstract, protected):
 % - reads responce from the divece;
 % - must be overrided by subclass;
 %
-% 3) send_data function (Abstract, protected):
+% 2) send_data function (Abstract, protected):
 % - sends ASCII text of bytes array to the device;
 % - must be overrided by subclass;
 % 
-% 4) send function (public):
+% 3) send function (public):
 % - high-level wrapper of an abstract send_data
 %
-% 5) read function (public):
+% 4) read function (public):
 % - high-level wrapper of an abstract read_data
 % 
-% 
-% 6) query function (public):
-%    NOTE: NOT ABSTRACT 2025.02.26
+% 5) query function (public):
 % - sends ASCII text to the device and return a response;
-% - must be overrided by subclass;
 %
-% 7) visa_obj property:
+% 6) visa_obj property:
 % - saves a handle to build-in Matlab class instance (serialport for example);
 % - inappropriate use of visa_obj property lead to undefined behavior;
 %
 % ------------
 
 % TODO:
-% 1) Add public read_function
-% 2) 
-% 3) may be discard termination in base class?
-% 4) create error MSG with stacktrace
-% 5) 
+% 1) maybe discard termination in base class?
+% 2) create more error MSG
+% 3) refactor visa_obj_delete !!!
 
 
 classdef Connector < handle
@@ -57,17 +51,17 @@ classdef Connector < handle
             if isa(obj.visa_obj, 'handle')
                 if isvalid(obj.visa_obj)
                     delete(obj.visa_obj);
-                    disp('Delete visa_obj (handle)')
+                    DEBUG_MSG('Delete visa_obj (handle)')
                 else
                     warning(['invalid handle visa_obj ...' ...
                         'in Connector.delete'])
                 end
             else
-                try % try to delete/ useful for gpib
+                try % try to delete (it is useful for gpib)
                     delete(obj.visa_obj)
-                    disp('Delete visa_obj (not handle)')
+                    DEBUG_MSG('Delete visa_obj (not handle)')
                 catch
-                    disp('visa_obj (not handle) could not be deleted')
+                    DEBUG_MSG('visa_obj (not handle) could not be deleted')
                 end
             end
         end
@@ -75,9 +69,11 @@ classdef Connector < handle
 
     methods (Access = public)
         function delete(obj)
-            disp("Connector D-tor")
+            DEBUG_MSG("Connector", "red", "dtor")
             if ~isempty(obj.visa_obj)
-                obj.visa_obj_delete;
+                if obj.visa_obj ~= "empty_connector"
+                    obj.visa_obj_delete;
+                end
             else
                 warning('empty visa_obj in Connector.delete')
             end
