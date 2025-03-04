@@ -16,10 +16,7 @@ classdef Connector_empty < Connector
 
     methods (Access = public)
         function obj = Connector_empty()
-            obj.visa_obj = "empty_connector";
-        end
-        function delete(obj)
-            DEBUG_MSG("EMPTY CONNECTOR", "red", "dtor")
+            obj.visa_obj = [];
         end
     end
 

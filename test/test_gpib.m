@@ -1,5 +1,5 @@
 
-obj1 = instrfind('Type', 'visa-gpib', 'RsrcName', 'GPIB0::15::INSTR')
+% obj1 = instrfind('Type', 'visa-gpib', 'RsrcName', 'GPIB0::15::INSTR')
 
 clc
 
@@ -44,8 +44,9 @@ delete(A)
 clc
 disp(datetime)
 
-resp = nyan('freq?')
-resp = nyan('ampl?')
+% resp = nyan('freq?')
+% resp = nyan('ampl?')
+resp = nyan('ampl 1;ampl?')
 
 % uint8(resp)
 

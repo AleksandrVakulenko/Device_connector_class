@@ -51,17 +51,18 @@ classdef Connector < handle
             if isa(obj.visa_obj, 'handle')
                 if isvalid(obj.visa_obj)
                     delete(obj.visa_obj);
-                    DEBUG_MSG('Delete visa_obj (handle)')
+                    DEBUG_MSG('Delete visa_obj (handle)', 'red')
                 else
-                    warning(['invalid handle visa_obj ...' ...
-                        'in Connector.delete'])
+                    DEBUG_MSG("invalid visa_obj handle in Connector.delete", ...
+                        "orange")
                 end
             else
                 try % try to delete (it is useful for gpib)
                     delete(obj.visa_obj)
-                    DEBUG_MSG('Delete visa_obj (not handle)')
+                    DEBUG_MSG('Delete visa_obj (not handle)', 'red')
                 catch
-                    DEBUG_MSG('visa_obj (not handle) could not be deleted')
+                    DEBUG_MSG('visa_obj (not handle) could not be deleted', ...
+                        'red')
                 end
             end
         end
@@ -69,13 +70,15 @@ classdef Connector < handle
 
     methods (Access = public)
         function delete(obj)
-            DEBUG_MSG("Connector", "red", "dtor")
-            if ~isempty(obj.visa_obj)
-                if obj.visa_obj ~= "empty_connector"
+            DEBUG_MSG("Connector :", "red", "dtor")
+            if class(obj) ~= "Connector_empty"
+                if ~isempty(obj.visa_obj)
                     obj.visa_obj_delete;
+                else
+                    DEBUG_MSG("empty visa_obj in Connector.delete", "orange")
                 end
             else
-                warning('empty visa_obj in Connector.delete')
+                DEBUG_MSG("ignore empty connector", "orange")
             end
         end
     end

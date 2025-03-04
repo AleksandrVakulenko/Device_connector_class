@@ -20,13 +20,13 @@ resp = nyan([])
 %%
 
 function resp = nyan(CMD)
-    A = Connector_COM_USB("COM4");
+    A = Connector_COM_USB("COM1");
     %     resp = A.query(CMD);
     if ~isempty(CMD)
         A.send(CMD)
     end
     pause(0.05)
-    resp = A.read
+    resp = A.read;
 end
 
 

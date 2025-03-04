@@ -13,6 +13,7 @@
 % 1) adlink, mcc, ni, keysight VISA?
 % 2) port_name variants string? char? num?
 % 3) timeout
+% 4) !!! in send: find all "\n" & "\r" and delete them, push_back "\n"
 
 classdef Connector_GPIB < Connector
     methods
@@ -21,14 +22,14 @@ classdef Connector_GPIB < Connector
                 port_name;
                 options.timeout double = 0.5; %FIXME: magic constant
             end
-            DEBUG_MSG("Connector_GPIB", "red", "ctor")
+            DEBUG_MSG("Connector_GPIB: create 'visa_obj'", "red", "ctor")
             port_name_full = con_utils.GPIB_port_name_convert(port_name);
             obj.visa_obj = visa('ni', port_name_full);
             obj.visa_obj.Timeout = options.timeout;
         end
 
         function delete(obj)
-            DEBUG_MSG("Connector_GPIB", "red", "dtor")
+            % nothing to do
         end
     end
 
