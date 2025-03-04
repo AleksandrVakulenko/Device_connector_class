@@ -1,3 +1,10 @@
+A group of classes for encapsulating low-level communication objects
+with measurement devices.
+
+Matlab R2021b.
+
+------------
+
 Connector(handle) is an abstract class  for wraping RS232,
 USB(virtual COM port) and GPIB connection to an arbitraty I/O device.
 
@@ -7,13 +14,13 @@ some kind of interface type.
 Abstract functions must be overrided by the subclass:
 
 1) send function (public):
-- high-level wrapper of an abstract send_data
+high-level wrapper of an abstract send_data
 
 2) read function (public):
-- high-level wrapper of an abstract read_data
+high-level wrapper of an abstract read_data
 
 3) query function (public):
-- sends ASCII text to the device and return a response;
+sends ASCII text to the device and return a response;
 
 ------------
 
@@ -42,5 +49,4 @@ of Connector type.
 Any attempt of executing public methods of Connector_empty
 lead to an error.
 
-
-
+------------
