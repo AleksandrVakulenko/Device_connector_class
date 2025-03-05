@@ -51,18 +51,18 @@ classdef Connector < handle
             if isa(obj.visa_obj, 'handle')
                 if isvalid(obj.visa_obj)
                     delete(obj.visa_obj);
-                    DEBUG_MSG('Delete visa_obj (handle)', 'red')
+                    DEBUG_MSG('Delete visa_obj (handle)', 'red', 'tab')
                 else
                     DEBUG_MSG("invalid visa_obj handle in Connector.delete", ...
-                        "orange")
+                        "orange", "tab")
                 end
             else
                 try % try to delete (it is useful for gpib)
                     delete(obj.visa_obj)
-                    DEBUG_MSG('Delete visa_obj (not handle)', 'red')
+                    DEBUG_MSG('Delete visa_obj (not handle)', 'red', 'tab')
                 catch
                     DEBUG_MSG('visa_obj (not handle) could not be deleted', ...
-                        'red')
+                        'red', 'tab')
                 end
             end
         end
@@ -75,10 +75,11 @@ classdef Connector < handle
                 if ~isempty(obj.visa_obj)
                     obj.visa_obj_delete;
                 else
-                    DEBUG_MSG("empty visa_obj in Connector.delete", "orange")
+                    DEBUG_MSG("empty visa_obj in Connector.delete",...
+                        "orange", "tab")
                 end
             else
-                DEBUG_MSG("ignore empty connector", "orange")
+                DEBUG_MSG("ignore empty connector", "orange", "tab")
             end
         end
     end
@@ -86,24 +87,44 @@ classdef Connector < handle
     % general send/receive
     methods (Access = public)
         function send(obj, data)
+            %FIXME: refactor
             if class(data) == "string" || class(data) == "char"
                 data = uint8(char(data));
                 obj.send_data(data);
-            end
-            if class(data) == "uint8" || class(data) == "int8"
+                DEBUG_MSG("CONNECTOR SEND: >" + string(char(data)) + "<", 'red')
+            elseif class(data) == "uint8" || class(data) == "int8"
                 data = uint8(data);
                 obj.send_data(data);
+                DEBUG_MSG("SEND: >" + string(char(data)) + "<", 'red')
             end
         end
 
         function data = read(obj)
             data = obj.read_data;
+            DEBUG_MSG("CONNECTOR READ: >" + string(data) + "<", 'red')
         end
 
-        function response = query(obj, data)
-            obj.send(data);
-            pause(0.05); % FIXME: magic constant
+        function response = query(obj, CMD, speed)
+            arguments
+                obj
+                CMD (1,1) string
+                speed {mustBeMember(speed, ["norm", "fast", "no delay"])} = "norm"
+            end
+            switch speed
+                case "norm"
+                    Delay = 0.05;
+                case "fast"
+                    Delay = 0.01;
+                case "no delay"
+                    Delay = 0;
+                otherwise
+                    Delay = 0.05;
+                    warning('Wrong Delay value')
+            end
+            obj.send(CMD);
+            pause(Delay); % FIXME: magic constant
             response = obj.read_data;
+            DEBUG_MSG("CONNECTOR RESP: >" + string(response) + "<", 'red')
             % FIXME: timeout?
         end
 
