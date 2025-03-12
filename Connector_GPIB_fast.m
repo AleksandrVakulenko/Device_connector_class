@@ -14,6 +14,7 @@
 % 2) port_name variants string? char? num?
 % 3) timeout
 % 4) !!! in send: find all "\n" & "\r" and delete them, push_back "\n"
+% 5) Add port name to debug_msg
 
 classdef Connector_GPIB_fast < Connector
     methods

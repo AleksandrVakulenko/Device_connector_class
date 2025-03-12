@@ -91,17 +91,17 @@ classdef Connector < handle
             if class(data) == "string" || class(data) == "char"
                 data = uint8(char(data));
                 obj.send_data(data);
-                DEBUG_MSG("CONNECTOR SEND: >" + string(char(data)) + "<", 'red')
+                DEBUG_MSG("CONNECTOR SEND: """ + string(char(data)) + """", 'red')
             elseif class(data) == "uint8" || class(data) == "int8"
                 data = uint8(data);
                 obj.send_data(data);
-                DEBUG_MSG("SEND: >" + string(char(data)) + "<", 'red')
+                DEBUG_MSG("SEND: """ + string(char(data)) + """", 'red')
             end
         end
 
         function data = read(obj)
             data = obj.read_data;
-            DEBUG_MSG("CONNECTOR READ: >" + string(data) + "<", 'red')
+            DEBUG_MSG("CONNECTOR READ: """ + string(data) + """", 'red')
         end
 
         function response = query(obj, CMD, speed)
@@ -124,7 +124,7 @@ classdef Connector < handle
             obj.send(CMD);
             pause(Delay); % FIXME: magic constant
             response = obj.read_data;
-            DEBUG_MSG("CONNECTOR RESP: >" + string(response) + "<", 'red')
+            DEBUG_MSG("CONNECTOR RESP: """ + string(response) + """", 'red')
             % FIXME: timeout?
         end
 
