@@ -1,7 +1,7 @@
 
 
 classdef GPIB_resp_queue < handle
-    properties (Access = private)
+    properties (Access = public)
         resp_data = {}
         hash_list uint32
     end

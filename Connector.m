@@ -124,6 +124,7 @@ classdef Connector < handle
             obj.send(CMD);
             pause(Delay); % FIXME: magic constant
             response = obj.read_data;
+            response = char(response);
             DEBUG_MSG("CONNECTOR RESP: """ + string(response) + """", 'red')
             % FIXME: timeout?
         end
