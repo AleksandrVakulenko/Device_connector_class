@@ -107,7 +107,7 @@ classdef Connector < handle
         function response = query(obj, CMD, speed)
             arguments
                 obj
-                CMD (1,1) string
+                CMD char
                 speed {mustBeMember(speed, ["norm", "fast", "no delay"])} = "norm"
             end
             switch speed
