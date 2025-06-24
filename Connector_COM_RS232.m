@@ -5,7 +5,7 @@
 %
 % ----INFO----:
 % Connector_COM_RS232 is a subclass of Connector, specified for maintain
-% connection by RS232 line using Low-level instace of Matlab built-in
+% connection by RS232 line using Low-level instance of Matlab built-in
 % serialport object.
 %
 %-------------

@@ -4,24 +4,24 @@
 % Licensed after GNU GPL v3
 %
 % ----INFO----:
-% Connector(handle) is an abstract class  for wraping RS232,
-% USB(virtual COM port) and GPIB connection to an arbitraty I/O device.
+% Connector(handle) is an abstract class  for wrapping RS232,
+% USB(virtual COM port) and GPIB connection to an arbitrary I/O device.
 %
-% Real connection is maintaned by inherited subclasse, scesialized for
+% Real connection is maintained by inherited subclass, specialized for
 % some kind of interface type.
 %
-% Abstract functions must be overrided by the subclass:
+% Abstract functions must be overridden by the subclass:
 %
 % Destruction of low-level serial instance is produced by Connector class
 % delete function, by calling visa_obj.delete.
 %
 % 1) read_data function (Abstract, protected):
-% - reads responce from the divece;
-% - must be overrided by subclass;
+% - reads response from the device;
+% - must be overridden  by subclass;
 %
 % 2) send_data function (Abstract, protected):
 % - sends ASCII text of bytes array to the device;
-% - must be overrided by subclass;
+% - must be overridden  by subclass;
 % 
 % 3) send function (public):
 % - high-level wrapper of an abstract send_data

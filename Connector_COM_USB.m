@@ -5,7 +5,7 @@
 %
 % ----INFO----:
 % Connector_COM_USB is a subclass of Connector_COM_RS232, specified for maintain
-% connection by USB in virtual COM port mode. For this case there no need to
+% connection by USB in virtual COM port mode. For this case there is no need to
 % specify any of COM port properties.
 %-------------
 

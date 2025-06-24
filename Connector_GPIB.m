@@ -5,7 +5,7 @@
 %
 % ----INFO----:
 % Connector_GPIB is a subclass of Connector, specified for maintain
-% connection by GPIB line using Low-level instace of Matlab built-in
+% connection by GPIB line using Low-level instance of Matlab built-in
 % visa object.
 % ------------
 
