@@ -113,7 +113,7 @@ classdef Connector < handle
         function Data = read(obj, num_of_bytes, mode)
             arguments
                 obj
-                num_of_bytes (1,1) double {mustBeInteger(num_of_bytes)} = []
+                num_of_bytes double {mustBeInteger(num_of_bytes)} = []
                 mode {mustBeMember(mode, ["multiple", "exact"])} = "multiple";
             end
             Data = obj.read_data;
