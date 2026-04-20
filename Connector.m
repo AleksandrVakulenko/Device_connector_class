@@ -42,6 +42,12 @@
 % 1) maybe discard termination in base class?
 % 2) create more error MSG
 % 3) refactor visa_obj_delete !!!
+% 4) update info
+
+% 2026/04/20 update:
+% 1) add Data_stash for reading num_of_bytes and saving unused part
+% 2) add flush function
+% 3) 
 
 
 classdef Connector < handle
@@ -86,24 +92,60 @@ classdef Connector < handle
 
     % general send/receive
     methods (Access = public)
-        function send(obj, data)
-            %FIXME: refactor
-            if class(data) == "string" || class(data) == "char"
-                data = uint8(char(data));
-                obj.send_data(data);
-                DEBUG_MSG(['CONNECTOR SEND: "' char(data) '"'], 'red')
-            elseif class(data) == "uint8" || class(data) == "int8"
-                data = uint8(data);
-                obj.send_data(data);
-                DEBUG_MSG(['SEND: "' char(data) '"'], 'red')
-            end
+
+        function flush(obj)
+            obj.read_data;
+            obj.Data_stash = [];
         end
 
-        function data = read(obj)
-            data = obj.read_data;
-            data = reshape(data, 1, numel(data));
-            DEBUG_MSG(['CONNECTOR READ: "' char(data)  '"'], 'red')
+        function send(obj, data)
+            if class(data) == "string" || class(data) == "char"
+                data = uint8(char(data));
+            elseif class(data) == "uint8" || class(data) == "int8"
+                data = uint8(data);
+            end
+            obj.send_data(data);
+            % FIXME: add binary detector for printing
+            DEBUG_MSG(['CONNECTOR SEND: "' char(data) '"'], 'red')
         end
+
+
+        function Data = read(obj, num_of_bytes, mode)
+            arguments
+                obj
+                num_of_bytes (1,1) double {mustBeInteger(num_of_bytes)} = []
+                mode {mustBeMember(mode, ["multiple", "exact"])} = "multiple";
+            end
+            Data = obj.read_data;
+            Data = reshape(Data, 1, numel(Data));
+            % FIXME: convert to uint8?
+            Data = [obj.Data_stash Data];
+
+            Bytes_count = numel(Data);
+
+            if ~isempty(num_of_bytes) && num_of_bytes >= 0
+                if mode == "exact"
+                    Bytes_to_read = Bytes_count;
+                    Bytes_to_stash = 0;
+                elseif mode == "multiple"
+                    Bytes_to_read = floor(Bytes_count/num_of_bytes) * num_of_bytes;
+                    Bytes_to_stash = Bytes_count - Bytes_to_read;
+                else
+                    error('unreachable');
+                end
+            else
+                Bytes_to_read = Bytes_count;
+                Bytes_to_stash = 0;
+            end
+            
+            obj.Data_stash = Data(Bytes_to_read+1 : end);
+            Data(Bytes_to_read+1 : end) = [];
+
+            DEBUG_MSG(['Data Stash size:' num2str(numel(obj.Data_stash))], "orange")
+            % FIXME: add binary detector for printing
+            DEBUG_MSG(['CONNECTOR READ: "' char(Data)  '"'], 'red')
+        end
+
 
         function response = query(obj, CMD, speed)
             arguments
@@ -111,7 +153,7 @@ classdef Connector < handle
                 CMD char
                 speed {mustBeMember(speed, ["norm", "fast", "no delay"])} = "norm"
             end
-            switch speed
+            switch speed % FIXME: magic constant
                 case "norm"
                     Delay = 0.05;
                 case "fast"
@@ -123,9 +165,10 @@ classdef Connector < handle
                     warning('Wrong Delay value')
             end
             obj.send(CMD);
-            pause(Delay); % FIXME: magic constant
+            pause(Delay);
             response = obj.read_data;
             response = char(response);
+            % FIXME: add binary detector for printing
             DEBUG_MSG(['CONNECTOR RESP: "' char(response) '"'], 'red')
             % FIXME: timeout?
         end
@@ -140,6 +183,10 @@ classdef Connector < handle
 
     properties (Access = protected)
         visa_obj;
+    end
+
+    properties (Access = private)
+        Data_stash = []; % add type
     end
 end
 
