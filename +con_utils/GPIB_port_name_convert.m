@@ -1,4 +1,5 @@
 % FIXME: add text parser
+% FIXME: GPIB could have different number GPIB0, GPIB1, GPIB2, ...
 function port = GPIB_port_name_convert(port)
     if class(port) == "char" || class(port) == "string"
         Num = str2num(port);

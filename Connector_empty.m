@@ -21,13 +21,11 @@ classdef Connector_empty < Connector
 
     methods (Access = protected)
         function send_data(obj, bytes)
-            DEBUG_MSG("Error: call of send_data for Connector_empty", "red");
             error(['send_data(bytes) could not be called for ' ...
                 'Connector_empty class'])
         end
 
         function data = read_data(obj)
-            DEBUG_MSG("Error: call of read_data for Connector_empty", "red");
             error('read_data() could not be called for Connector_empty class')
         end
     end
