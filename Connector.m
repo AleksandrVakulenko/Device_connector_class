@@ -44,9 +44,9 @@
 % 3) refactor visa_obj_delete !!!
 % 4) update info
 
-% 2026/04/20 update:
-% 1) add Data_stash for reading num_of_bytes and saving unused part
-% 2) add flush function
+% 2026/04/21 update:
+% 1) add override to abstract functions
+% 2) 
 % 3) 
 
 

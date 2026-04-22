@@ -14,23 +14,44 @@ end
 Type_select(Type_select == "") = [];
 
 dev_table = visadevlist;
+init_dev_table = dev_table;
 
-if ~isempty(SerialNumber) && ~isempty(char(SerialNumber))
-    range = dev_table.SerialNumber == string(SerialNumber);
-    dev_table = dev_table(range, :);
-end
-
+% 1) Select subtable by name.
 range = dev_table.Model == Name;
 dev_table = dev_table(range, :);
 
-ResourceName = dev_table.ResourceName;
-if numel(ResourceName) == 0
-    Str = adev_utils.get_dev_list_str(dev_table);
+% 2) Select subtable by SerialNumber (if provided).
+if ~isempty(SerialNumber) && ~isempty(char(SerialNumber))
+    range = dev_table.SerialNumber == string(SerialNumber);
+    dev_table = dev_table(range, :);
+else
+% 3) If SerialNumber is not provided and where is more than one serial 
+% number for device resources with the same name - throw an error.
+    SN_list = string(dev_table.SerialNumber);
+    SN_list = strtrim(SN_list);
+    SN_list = unique(SN_list);
+    if numel(SN_list) > 1
+        disp(['VISA device list for <' char(Name) '>:'])
+        disp(dev_table)
+        error(['More than one device of the same model are in list, ' ...
+            'non-empty serial number argument is required.'])
+    end
+end
+
+
+
+VISA_addr = dev_table.ResourceName;
+if numel(VISA_addr) == 0
+    disp(['VISA device list for <' char(Name) '>:'])
+    disp(init_dev_table)
     error(['No device "' char(Name) '"' ' with serial number "' ...
-        char(SerialNumber) '" in list: ' newline Str]);
-elseif numel(ResourceName) > 1
+        char(SerialNumber) '" is in list.']);
+%     error(['More than one device of the same model are in list, ' ...
+%         'non-empty serial number argument is required.'])
+%     Str = get_dev_list_str(dev_table);
+elseif numel(VISA_addr) > 1
     % NOTE: case of multiple options;
-    Type = get_type_from_resname(ResourceName);
+    Type = get_type_from_resname(VISA_addr);
 
     if ~isempty(Type_select)
         ind_type_s = false(1, numel(Type));
@@ -38,20 +59,20 @@ elseif numel(ResourceName) > 1
             ind_type_s = ind_type_s | Type == Type_select(i);
         end
         dev_table = dev_table(ind_type_s, :);
-        ResourceName = dev_table.ResourceName;
-        Type = get_type_from_resname(ResourceName);
+        VISA_addr = dev_table.ResourceName;
+        Type = get_type_from_resname(VISA_addr);
     end
 
-    % NOTE: select order USB > TCPIP > GPIB > COM
+    % NOTE: select order USB > GPIB > TCPIP > COM
     % NOTE: If new options are added, the following functions must also
     % be updated:
     % - parse_resource_name(Resource)
     if any(Type == "USB")
         ind_type = find(Type == "USB");
-    elseif any(Type == "TCPIP")
-        ind_type = find(Type == "TCPIP");
     elseif any(Type == "GPIB")
         ind_type = find(Type == "GPIB");
+    elseif any(Type == "TCPIP")
+        ind_type = find(Type == "TCPIP");
     elseif any(Type == "COM")
         ind_type = find(Type == "COM");
     else
@@ -60,13 +81,14 @@ elseif numel(ResourceName) > 1
     
     dev_table = dev_table(ind_type, :);
 
+    % NOTE: it also could be a "::socket" (not ::INSTR)
     [ind_instr] = filter_INSTR(dev_table.ResourceName);
     dev_table = dev_table(ind_instr, :);
 
     if size(dev_table, 1) > 1
-        dev_table = dev_table(1, :);
-        warning("The choice of connection type is still ambiguous; " + ...
-            "first is selected")
+%         dev_table = dev_table(1, :);
+        disp(dev_table);
+        error('The choice of connection type is still ambiguous.');
     end
 
 end
@@ -79,6 +101,10 @@ SerialNumber = dev_table.SerialNumber;
 % disp(['VISA addr:  ' char(visa_addr)])
 
 end
+
+
+
+
 
 
 function Type = get_type_from_resname(ResourceName)
@@ -192,6 +218,7 @@ function Tokens = tokenizer(Str, delimiters)
         Tokens(i) = string(token_new);
     end
 end
+
 
 function Str = get_dev_list_str(dev_table)
     arguments
