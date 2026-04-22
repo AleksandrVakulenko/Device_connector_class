@@ -34,17 +34,13 @@ classdef Connector_GPIB < Connector
     end
 
     methods (Access = protected)
-        function f_close(obj) % FIXME: debug/delete
-            fclose(obj.visa_obj);
-        end
-
         function send_data(obj, bytes)
             fopen(obj.visa_obj);
             try
                 fwrite(obj.visa_obj, bytes);
             catch e
                 fclose(obj.visa_obj);
-                error(e.message)
+                rethrow(e)
             end
             fclose(obj.visa_obj);
         end
@@ -55,7 +51,7 @@ classdef Connector_GPIB < Connector
                 data = obj.visa_obj.fscanf();
             catch e
                 fclose(obj.visa_obj);
-                error(e.message)
+                rethrow(e)
             end
             fclose(obj.visa_obj);
             data = con_utils.discard_termination(data);
