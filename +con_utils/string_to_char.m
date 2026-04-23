@@ -1,3 +1,4 @@
+% FIXME: maybe unused
 function text = string_to_char(text)
 if class(text) == "string"
     text = char(text);

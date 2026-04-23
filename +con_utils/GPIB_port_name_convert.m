@@ -1,13 +1,17 @@
 % FIXME: add text parser
 % FIXME: GPIB could have different number GPIB0, GPIB1, GPIB2, ...
-function port = GPIB_port_name_convert(port)
+function port = GPIB_port_name_convert(port, num)
+arguments
+    port
+    num = 0
+end
     if class(port) == "char" || class(port) == "string"
         Num = str2num(port);
         if ~isempty(Num) && isreal(Num) % for case "23j", "14i", ...
-            port = ['GPIB0::' num2str(Num) '::INSTR'];
+            port = ['GPIB' num2str(num) '::' num2str(Num) '::INSTR'];
         end
     elseif isnumeric(port) && isreal(port)
-        port = ['GPIB0::' num2str(port) '::INSTR'];
+        port = ['GPIB' num2str(num) '::' num2str(port) '::INSTR'];
     else
         error("port must be a real number or char of string")
     end
