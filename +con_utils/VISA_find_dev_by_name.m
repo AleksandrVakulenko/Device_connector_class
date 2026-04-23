@@ -51,7 +51,7 @@ if numel(VISA_addr) == 0
 %     Str = VISA_get_dev_list_str(dev_table);
 elseif numel(VISA_addr) > 1
     % NOTE: case of multiple options;
-    Type = con_utils.get_type_from_resname(VISA_addr);
+    Type = get_type_from_resname(VISA_addr);
 
     if ~isempty(Type_select)
         ind_type_s = false(1, numel(Type));
@@ -60,7 +60,7 @@ elseif numel(VISA_addr) > 1
         end
         dev_table = dev_table(ind_type_s, :);
         VISA_addr = dev_table.ResourceName;
-        Type = con_utils.get_type_from_resname(VISA_addr);
+        Type = get_type_from_resname(VISA_addr);
     end
 
     % NOTE: select order USB > GPIB > TCPIP > COM
