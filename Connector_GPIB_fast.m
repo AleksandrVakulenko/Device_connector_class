@@ -25,7 +25,8 @@ classdef Connector_GPIB_fast < Connector
             end
             DEBUG_MSG("Connector_GPIB_fast: create 'visa_obj'", "red", "ctor")
             port_name_full = con_utils.GPIB_port_name_convert(port_name);
-            obj.visa_obj = visa('ni', port_name_full);
+%             obj.visa_obj = visa('ni', port_name_full);
+            obj.visa_obj = con_utils.VISA_visa_wrapper(port_name_full);
             obj.visa_obj.Timeout = options.timeout;
             DEBUG_MSG("CON_FAST: open GPIB visa", 'red', 'tab')
             fopen(obj.visa_obj);

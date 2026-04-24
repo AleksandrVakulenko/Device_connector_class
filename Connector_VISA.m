@@ -31,7 +31,8 @@ classdef Connector_VISA < Connector
                 options.timeout double = 0.5; %FIXME: magic constant
             end
             %FIXME: add variants on VISA vendor
-            obj.visa_obj = visa('ni', visa_addr);
+%             obj.visa_obj = visa('ni', visa_addr);
+            obj.visa_obj = con_utils.VISA_visa_wrapper(visa_addr);
             % NOTE: maybe use new visa?
             % EXAMPLE: v = visadev('GPIB0::1::0::INSTR');
             obj.visa_obj.Timeout = options.timeout;

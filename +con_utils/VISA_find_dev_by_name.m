@@ -17,8 +17,10 @@ dev_table = visadevlist;
 init_dev_table = dev_table;
 
 % 1) Select subtable by name.
-range = dev_table.Model == Name;
-dev_table = dev_table(range, :);
+if ~isempty(Name) && ~isempty(char(Name))
+    range = dev_table.Model == Name;
+    dev_table = dev_table(range, :);
+end
 
 % 2) Select subtable by SerialNumber (if provided).
 if ~isempty(SerialNumber) && ~isempty(char(SerialNumber))

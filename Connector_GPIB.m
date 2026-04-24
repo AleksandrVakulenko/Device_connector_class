@@ -24,7 +24,8 @@ classdef Connector_GPIB < Connector
             end
             DEBUG_MSG("Connector_GPIB: create 'visa_obj'", "red", "ctor")
             port_name_full = con_utils.GPIB_port_name_convert(port_name);
-            obj.visa_obj = visa('ni', port_name_full);
+%             obj.visa_obj = visa('ni', port_name_full);
+            obj.visa_obj = con_utils.VISA_visa_wrapper(port_name_full);
             obj.visa_obj.Timeout = options.timeout;
         end
 
