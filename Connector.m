@@ -123,19 +123,21 @@ classdef Connector < handle
 
             Bytes_count = numel(Data);
 
+            % FIXME: what if Bytes_count < num_of_bytes ???
+
             if ~isempty(num_of_bytes) && num_of_bytes >= 0
                 if mode == "exact"
                     Bytes_to_read = Bytes_count;
-                    Bytes_to_stash = 0;
+%                     Bytes_to_stash = 0;
                 elseif mode == "multiple"
                     Bytes_to_read = floor(Bytes_count/num_of_bytes) * num_of_bytes;
-                    Bytes_to_stash = Bytes_count - Bytes_to_read;
+%                     Bytes_to_stash = Bytes_count - Bytes_to_read;
                 else
                     error('unreachable');
                 end
             else
                 Bytes_to_read = Bytes_count;
-                Bytes_to_stash = 0;
+%                 Bytes_to_stash = 0;
             end
             
             obj.Data_stash = Data(Bytes_to_read+1 : end);

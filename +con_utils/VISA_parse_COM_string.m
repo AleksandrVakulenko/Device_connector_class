@@ -1,4 +1,5 @@
-function Addr = VISA_parse_COM_string(Name)
+function [Addr, full_address] = VISA_parse_COM_string(Name)
+    Name = upper(Name);
     if isnumeric(Name)
         if numel(Name) > 1
             error('COM port number must be scalar');
@@ -9,6 +10,7 @@ function Addr = VISA_parse_COM_string(Name)
         if Name <= 0
             error("COM port number must be > 0");
         end
+        Addr = Name;
     elseif any(class(Name) == ["string", "char"])
         Name = char(Name);
         Name = strrep(Name, "COM", "ASRL");
@@ -30,4 +32,5 @@ function Addr = VISA_parse_COM_string(Name)
             error('COM port number does not provided')
         end
     end
+    full_address = ['COM' char(num2str(Addr))];
 end

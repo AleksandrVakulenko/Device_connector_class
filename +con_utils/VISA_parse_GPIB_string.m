@@ -1,4 +1,5 @@
 function [GPIB_num, GPIB_addr, full_address] = VISA_parse_GPIB_string(Name)
+    Name = upper(Name);
     if isempty(Name)
         error("GPIB adress must not be empty")
     end
