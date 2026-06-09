@@ -72,7 +72,7 @@ classdef Connector_VISA < Connector
             else
                 fopen(obj.visa_obj);
                 try
-                    data = obj.visa_obj.fscanf();
+                    data = obj.visa_obj.fscanf;
                 catch e
                     fclose(obj.visa_obj);
                     rethrow(e)
