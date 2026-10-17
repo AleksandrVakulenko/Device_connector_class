@@ -1,7 +1,6 @@
-name:
-Connector
-
-dependencies:
-Debug_msg
-
-info:
+{
+  "name": "Connector",
+  "dependecies": "Debug_msg",
+  "info": "Collection of classes and functions for devices connection",
+  "Tegs": "USB; GPIB; ETHERNET; COM; connection;"
+}
