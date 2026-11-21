@@ -1,6 +1,6 @@
 
 
-
+% NOTE: Input_str could be numeric
 
 function [visa_addr, SerialNumber] = VISA_str2gpib(Input_str, Dev_Name, Type_select)
 % NOTE: If new options are added, the following functions must also
@@ -11,6 +11,7 @@ arguments
     Dev_Name string
     Type_select string {mustBeMember(Type_select, ...
         ["USB", "GPIB", "COM", "ASRL", "TCPIP"])} = string.empty
+    % FIXME: where do we use Type_select?
 end
 
 try
