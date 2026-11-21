@@ -15,9 +15,11 @@ for i = 1:numel(Visa_vendor_list)
 %         err.identifier
         if (err.identifier == "instrument:visa:adaptorNotFound") || ...
             (err.identifier == "instrument:visa:invalidVENDOR")
-            continue;
+            continue; % NOTE: try another vendor
         elseif err.identifier == "instrument:visa:invalidRSRCNAMESpecified"
-            error('Invalid visa address')
+            error('Invalid visa address');
+        else
+            rethrow(err); % NOTE: other errors
         end
     end
     break
