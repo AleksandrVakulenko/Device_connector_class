@@ -113,6 +113,7 @@ classdef Connector < handle
         function Data = read(obj, num_of_bytes, mode)
             arguments
                 obj
+                % FIXME: check for empty default is possible
                 num_of_bytes double {mustBeInteger(num_of_bytes)} = []
                 mode {mustBeMember(mode, ["multiple", "exact"])} = "multiple";
             end
@@ -125,7 +126,7 @@ classdef Connector < handle
 
             % FIXME: what if Bytes_count < num_of_bytes ???
 
-            if ~isempty(num_of_bytes) && num_of_bytes >= 0
+            if ~isempty(num_of_bytes) && num_of_bytes > 0
                 if mode == "exact"
                     Bytes_to_read = Bytes_count;
 %                     Bytes_to_stash = 0;
