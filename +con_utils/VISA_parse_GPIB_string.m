@@ -1,19 +1,22 @@
 function [GPIB_num, GPIB_addr, full_address] = VISA_parse_GPIB_string(Name)
-    Name = upper(Name);
+    
     if isempty(Name)
         error("GPIB adress must not be empty")
     end
+
     if isnumeric(Name)
         if numel(Name) > 1
             error('GPIB address number must be scalar');
         end
-        if abs(round(Name) - Name) > 1e-6
+        if abs(round(Name) - Name) > 1e-6 % FIXME: use mustbeinteger()
             error('GPIB address number must be integer');
         end
     
         GPIB_num = 0;
         GPIB_addr = Name;
-    else
+    elseif any(class(Name) == ["string", "char"])
+        Name = char(Name);
+        Name = upper(Name);
         try
             [~, GPIB_num, GPIB_addr] = con_utils.VISA_parse_resource_name(Name);
         catch err
@@ -38,7 +41,8 @@ function [GPIB_num, GPIB_addr, full_address] = VISA_parse_GPIB_string(Name)
         if isempty(GPIB_num)
             error('Wrong number of GPIB controller')
         end
-    
+    else
+        error('Invalid type of function argument');
     end
     con_utils.GPIB_validation(GPIB_addr);
     full_address = con_utils.GPIB_port_name_convert(GPIB_addr, GPIB_num);

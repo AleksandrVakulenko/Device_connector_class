@@ -1,10 +1,10 @@
 function [Addr, full_address] = VISA_parse_COM_string(Name)
-    Name = upper(Name);
+    
     if isnumeric(Name)
         if numel(Name) > 1
             error('COM port number must be scalar');
         end
-        if abs(round(Name) - Name) > 1e-6
+        if abs(round(Name) - Name) > 1e-6 % FIXME: use mustbeinteger()
             error('COM port number must be integer');
         end
         if Name <= 0
@@ -13,6 +13,7 @@ function [Addr, full_address] = VISA_parse_COM_string(Name)
         Addr = Name;
     elseif any(class(Name) == ["string", "char"])
         Name = char(Name);
+        Name = upper(Name);
         Name = strrep(Name, "COM", "ASRL");
         try
             [Type, Addr, ~] = con_utils.VISA_parse_resource_name(Name);
@@ -31,6 +32,8 @@ function [Addr, full_address] = VISA_parse_COM_string(Name)
         if isempty(Addr)
             error('COM port number does not provided')
         end
+    else
+        error('Invalid type of function argument');
     end
     full_address = ['COM' char(num2str(Addr))];
 end
