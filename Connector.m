@@ -150,25 +150,28 @@ classdef Connector < handle
         end
 
 
-        function response = query(obj, CMD, speed)
+        function response = query(obj, CMD, Delay_opt)
             arguments
                 obj
                 CMD char
-                speed {mustBeMember(speed, ["norm", "fast", "no delay"])} = "norm"
+                Delay_opt {mustBeMember(Delay_opt, ...
+                    ["long", "norm", "fast", "no delay"])} = "norm"
             end
-            switch speed % FIXME: magic constant
+            switch Delay_opt % FIXME: magic constant
+                case "long"
+                    Delay_s = 0.10;
                 case "norm"
-                    Delay = 0.05;
+                    Delay_s = 0.05;
                 case "fast"
-                    Delay = 0.01;
+                    Delay_s = 0.01;
                 case "no delay"
-                    Delay = 0;
+                    Delay_s = 0;
                 otherwise
-                    Delay = 0.05;
+                    Delay_s = 0.05;
                     warning('Wrong Delay value')
             end
             obj.send(CMD);
-            pause(Delay);
+            pause(Delay_s);
             response = obj.read_data;
             response = char(response);
             % FIXME: add binary detector for printing
