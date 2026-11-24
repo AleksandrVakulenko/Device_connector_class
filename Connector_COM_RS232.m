@@ -23,25 +23,33 @@ classdef Connector_COM_RS232 < Connector
                 options.Parity {mustBeMember(options.Parity,...
                     ["none", "even", "odd"])} = "none";
             end
-            % FIXME: add arg check
-            try
-            obj.visa_obj = serialport(port_name, speed, ...
-                'DataBits', options.DataBits, ...
-                'StopBits', options.StopBits, ...
-                'Parity', options.Parity);
-            catch % NOTE: second try
-            pause(0.15);
-            obj.visa_obj = serialport(port_name, speed, ...
-                'DataBits', options.DataBits, ...
-                'StopBits', options.StopBits, ...
-                'Parity', options.Parity);
+            max_try = 3;
+            try_num = 0;
+            while true
+                try
+                    try_num = try_num + 1;
+                    obj.visa_obj = serialport(port_name, speed, ...
+                        'DataBits', options.DataBits, ...
+                        'StopBits', options.StopBits, ...
+                        'Parity', options.Parity);
+                    break;
+                catch err
+                    if try_num < max_try
+                        pause(0.2);
+                        continue;
+                    else
+                        rethrow(err);
+                    end
+                end
             end
+
         end
     end
 
     methods (Access = protected)
         function send_data(obj, bytes)
-            write(obj.visa_obj, uint8(bytes), "uint8");
+            serial_obj = obj.visa_obj;
+            write(serial_obj, uint8(bytes), "uint8");
         end
 
         function Data = read_data(obj)
